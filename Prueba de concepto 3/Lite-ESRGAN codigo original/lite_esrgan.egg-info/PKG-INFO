@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: lite-esrgan
+Version: 1.0.0
+Summary: Lite-ESRGAN: High-Quality Super-Resolution for Everyone.
+Author-email: Fireflies3072 <cxu338@wisc.edu>
+License: MIT License
+        
+        Copyright (c) 2025 Fireflies3072
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=2.1
+Requires-Dist: torchvision>=0.16
+Requires-Dist: numpy>=1.22
+Requires-Dist: opencv-python>=4.7
+Dynamic: license-file
+
+## Lite-ESRGAN
+
+Lite-ESRGAN: High-Quality Super-Resolution for Everyone. A streamlined, low-VRAM implementation of the Real-ESRGAN model.
+
+### Structure
+- `src/utils.py`: Image I/O, degradations, resize helpers, tensor conversions, device utils, model save/load, and a prefetching dataloader.
+- `src/dataset.py`: `ImageDataset` for paired LR/HR samples with realistic degradations.
+- `src/model.py`: `SRNet` (generator), `VGGNet` (perceptual features), `Discriminator` (GAN stage).
+- `src/train_base.py`: Stage 1 training (pixel + perceptual loss).
+- `src/train_gan.py`: Stage 2 training (adds GAN loss).
+- `src/inference.py`: Load a trained model and upscale an image.
+
+### Install
+```bash
+pip install .
+```
+
+### Datasets
+Place training images under `data/` (or adjust the path inside training scripts).
+
+Put a sample image `sample.png` under `test_data`. For every hundreds of steps, an upscaled sample data will be generated for evaluation.
+
+### Train
+
+Training can be done on a 4GB GPU. If you have a better GPU, increase `batch_size` to get better result.
+
+- Stage 1:
+```bash
+python src/train_base.py
+```
+- Stage 2:
+```bash
+python src/train_gan.py
+```
+
+Models and test outputs are saved under `./model_base`, `./model_gan`, `./test_base`, and `./test_gan` per script settings.
+
+### Inference
+
+On a 4GB GPU, the original Real-ESRGAN can handle up to about 300x300 image patch at a time, while this Lite-ESRGAN can handle about 1000x1000 image patch.
+
+Edit `src/inference.py` to set the input image path, then:
+```bash
+python src/inference.py
+```
+
+### Sample result
+
+**Same-scale comparison:** (Left: Linear, Right: Lite-ESRGAN)
+
+![](https://fireflies3072.blob.core.windows.net/blog/images/2022-07-lite-esrgan/comparison1.jpg)
+
+![](https://fireflies3072.blob.core.windows.net/blog/images/2022-07-lite-esrgan/comparison2.jpg)

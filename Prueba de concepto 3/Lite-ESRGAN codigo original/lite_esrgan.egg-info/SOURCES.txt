@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+src/lite_esrgan.egg-info/PKG-INFO
+src/lite_esrgan.egg-info/SOURCES.txt
+src/lite_esrgan.egg-info/dependency_links.txt
+src/lite_esrgan.egg-info/requires.txt
+src/lite_esrgan.egg-info/top_level.txt
